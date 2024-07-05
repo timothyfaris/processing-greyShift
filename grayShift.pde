@@ -1,9 +1,9 @@
 PImage img;
 
 //keyword argument variables
-String filepath = "C:\\Users\\tim\\Desktop\\shinkansen.jpg"; 
-Integer w = 2000;
-Integer h = 1465;
+String filepath = null; 
+Integer w = null;
+Integer h = null;
 
 //tonal separation variables
 int low;
