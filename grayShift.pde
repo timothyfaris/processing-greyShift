@@ -1,19 +1,26 @@
 PImage img;
 
-String filename; 
+//keyword argument variables
+String filepath = "C:\\Users\\tim\\Desktop\\shinkansen.jpg"; 
+Integer w = 2000;
+Integer h = 1465;
 
+//tonal separation variables
 int low;
 int mid;
 int high;
 
+//color channel separation variabls for low tones
 float rl;
 float gl;
 float bl;
 
+//color channel separation variabls for mid tones
 float rm;
 float gm;
 float bm;
 
+//color channel separation variabls for high tones
 float rh;
 float gh;
 float bh;
@@ -64,10 +71,42 @@ int r4;
 int r5;
 int r6;
 
+public void settings() {
+    // Parse command-line arguments
+  if (args != null) {
+    for (int i = 0; i < args.length; i++) {
+      String[] parts = args[i].split("=");
+      if (parts.length == 2) {
+        String key = parts[0];
+        String value = parts[1];
+        if (key.equals("filepath")) {
+          filepath = value;
+        } else if (key.equals("w")) {
+          w = int(value);
+        } else if (key.equals("h")) {
+          h = int(value);
+        } 
+      }
+    }
+  }
+  
+  //validate keyword arguments
+  if (filepath == null) {
+    throw new Error("Filepath {filepath} must be defined within the sketch or passed as a keyword argument when running from command line");
+  }
+   if (w == null) {
+    throw new Error("Width {w} must be defined within the sketch or passed as a keyword argument when running from command line");
+  }
+   if (h == null) {
+    throw new Error("Height {h} must be defined within the sketch or passed as a keyword argument when running from command line");
+  }
+
+  size(w,h);
+}
+
 void setup() {
-  size(3000,2000);
-  filename = "R0002076.jpg";
-  img = loadImage(filename);
+
+  img = loadImage(filepath);
 
   img.loadPixels();
 
@@ -210,7 +249,7 @@ void setup() {
   println(redmidOffset, greenmidOffset, bluemidOffset);
   println(redhighOffset, greenhighOffset, bluehighOffset);
 
-  img.save(split(filename, ".")[0] + "_shifted" + "." + split(filename, ".")[1]);
+  img.save(split(filepath, ".")[0] + "_shifted" + "." + split(filepath, ".")[1]);
   exit();
 }
 
