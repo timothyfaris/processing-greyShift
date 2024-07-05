@@ -2,6 +2,10 @@ This sketch opens an image and locates pixels within a specified range of 50% gr
 
 ![aerial_example](/assets/aerial_example.gif) 
 
+![portrait_example](/assets/aerial_example.gif) 
+
+![flowers_example](/assets/aerial_example.gif) 
+
 ### Requirements 
 
 Run using the Processing Development Environment.
