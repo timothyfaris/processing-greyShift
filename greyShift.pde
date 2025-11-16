@@ -4,6 +4,7 @@ PImage img;
 String filepath = null; 
 Integer w = null;
 Integer h = null;
+float scalar = 1;
 
 //tonal separation variables
 int low;
@@ -14,16 +15,19 @@ int high;
 float rl;
 float gl;
 float bl;
+float al;
 
 //color channel separation variabls for mid tones
 float rm;
 float gm;
 float bm;
+float am;
 
 //color channel separation variabls for high tones
 float rh;
 float gh;
 float bh;
+float ah;
 
 FloatList redlow;
 FloatList greenlow;
@@ -84,8 +88,10 @@ public void settings() {
         } else if (key.equals("w")) {
           w = int(value);
         } else if (key.equals("h")) {
-          h = int(value);
-        } 
+          h = int(value);  
+        } else if (key.equals("scalar")) {
+          scalar = float(value);
+        }
       }
     }
   }
@@ -100,7 +106,12 @@ public void settings() {
    if (h == null) {
     throw new Error("Height {h} must be defined within the sketch or passed as a keyword argument when running from command line");
   }
-
+   if (scalar > 1) {
+    throw new Error("Scalar {scalar} must be greater than 0 and less than or equal to 1.");
+  }
+   if (scalar <= 0) {
+    throw new Error("Scalar {scalar} must be greater than 0 and less than or equal to 1.");
+  }
   size(w,h);
 }
 
@@ -134,6 +145,7 @@ void setup() {
   greenhighSum = 0;
   bluehighSum = 0;
 
+//RGB
   //low = 25% B
   r1 = 54;
   r2 = 74;
@@ -150,8 +162,11 @@ void setup() {
     rm = red(img.pixels[ii]);
     gm = green(img.pixels[ii]);
     bm = blue(img.pixels[ii]);
-
-    if ((rm >= r3 && rm <= r4) && (gm >= r3 && gm <= r4) && (bm >= r3 && bm <= r4)) {
+    am = (rm + gm + bm) / 3;
+        //if ((rm >= r3 && rm <= r4) && (gm >= r3 && gm <= r4) && (bm >= r3 && bm <= r4)) {
+    if (am >= r3 && am <= r4) {
+      
+    
 
       mid++;
 
@@ -179,8 +194,9 @@ void setup() {
     rl = red(img.pixels[i]);
     gl = green(img.pixels[i]);
     bl = blue(img.pixels[i]);
-
-    if ((rl >= r1 && rl <= r2) && (gl >= r1 && gl <= r2) && (bl >= r1 && bl <= r2)) {
+    al = (rl + gl + bl) / 3;
+    if (al >= r3 && al <= r4) {
+    //if ((rl >= r1 && rl <= r2) && (gl >= r1 && gl <= r2) && (bl >= r1 && bl <= r2)) {
 
       low++;
 
@@ -208,8 +224,9 @@ void setup() {
     rh = red(img.pixels[iii]);
     gh = green(img.pixels[iii]);
     bh = blue(img.pixels[iii]);
-
-    if ((rh >= r5 && rh <= r6) && (gh >= r5 && gh <= r6) && (bh >= r5 && bh <= r6)) {
+    ah = (rh + gh + bh) / 3;
+    if (ah >= r3 && ah <= r4) {
+    //if ((rh >= r5 && rh <= r6) && (gh >= r5 && gh <= r6) && (bh >= r5 && bh <= r6)) {
 
       high++;
 
@@ -217,6 +234,7 @@ void setup() {
       greenhigh.append(gh);
       bluehigh.append(bh);
     }
+    
   }
 
   for (int ppp = 0; ppp < high; ppp++ ) {
@@ -241,7 +259,7 @@ void setup() {
     gh = green(img.pixels[iii]);
     bh = blue(img.pixels[iii]);
 
-    img.pixels[iii] = color(round(rh - redAvgOffset), round(gh - greenAvgOffset), round(bh - blueAvgOffset));
+    img.pixels[iii] = color(round(rh - redAvgOffset * scalar), round(gh - greenAvgOffset * scalar), round(bh - blueAvgOffset * scalar));
   }
 
   updatePixels();
@@ -249,7 +267,7 @@ void setup() {
   println(redmidOffset, greenmidOffset, bluemidOffset);
   println(redhighOffset, greenhighOffset, bluehighOffset);
 
-  img.save(split(filepath, ".")[0] + "_shifted" + "." + split(filepath, ".")[1]);
+  img.save(split(filepath, ".")[0] + "_shifted_scalar("+ scalar +")." + split(filepath, ".")[1]);
   exit();
 }
 
